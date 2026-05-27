@@ -1,7 +1,7 @@
 name: Infrastructure / DevOps
 description: CI, CD, deployments, dependencies, observability, or developer experience
 title: "[Infra]: "
-labels: ["infrastructure"]
+labels: ["infra"]
 body:
   - type: textarea
     id: summary
