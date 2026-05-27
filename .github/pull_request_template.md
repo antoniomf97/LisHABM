@@ -2,19 +2,13 @@
 
 <!-- One or two sentences describing what this PR does. -->
 
-## Motivation
-
-<!-- Why is this change needed? Link related issues: Closes #123 -->
-
 ## Changes
 
 <!-- Bullet list of notable changes. Skip if the summary covers it. -->
--
--
+- 
 
 ## Testing
 
-<!-- How did you verify this works? -->
 - [ ] Unit tests added or updated
 - [ ] Integration tests added or updated (if behavior spans modules)
 - [ ] Ran `pytest` locally and it passes
@@ -22,7 +16,6 @@
 
 ## Module impact
 
-<!-- Tick any that apply. Helps reviewers know what to focus on. -->
 - [ ] `core/` (engine internals — extra scrutiny)
 - [ ] Domain module(s): _________
 - [ ] `io/` (loaders / writers)
@@ -37,3 +30,7 @@
 - [ ] No `print()` debug calls or `breakpoint()` left behind
 - [ ] Docs / README updated if behavior or interface changed
 - [ ] Commits are signed
+
+## Additional comments
+
+<!-- Add additional comments -->

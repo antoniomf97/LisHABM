@@ -1,13 +1,13 @@
 name: Feature request
 description: Propose a new feature or enhancement
 title: "[Feature]: "
-labels: ["enhancement", "triage"]
+labels: ["enhancement"]
 body:
   - type: textarea
     id: problem
     attributes:
       label: Problem
-      description: What problem does this solve? Who is affected? Avoid jumping to a solution here.
+      description: What problem does this solve, and who is affected?
     validations:
       required: true
 
@@ -20,34 +20,7 @@ body:
       required: true
 
   - type: textarea
-    id: alternatives
-    attributes:
-      label: Alternatives considered
-      description: Other approaches you've thought about and why this one is preferred.
-
-  - type: dropdown
-    id: scope
-    attributes:
-      label: Scope
-      options:
-        - Small (a few hours)
-        - Medium (a few days)
-        - Large (a week or more)
-        - Unsure
-    validations:
-      required: true
-
-  - type: textarea
-    id: acceptance
-    attributes:
-      label: Acceptance criteria
-      description: How will we know this is done? List concrete, testable conditions.
-      placeholder: |
-        - [ ] ...
-        - [ ] ...
-
-  - type: textarea
     id: context
     attributes:
       label: Additional context
-      description: Screenshots, mockups, links, prior art, related issues.
+      description: Alternatives considered, mockups, links, related issues.

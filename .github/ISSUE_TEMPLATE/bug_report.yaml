@@ -1,17 +1,13 @@
 name: Bug report
 description: Report something that isn't working as expected
 title: "[Bug]: "
-labels: ["bug", "triage"]
+labels: ["bug"]
 body:
-  - type: markdown
-    attributes:
-      value: Thanks for taking the time to file a bug report. Please fill out the details below.
-
   - type: textarea
-    id: summary
+    id: description
     attributes:
-      label: Summary
-      description: A clear, concise description of the bug.
+      label: What happened?
+      description: Describe the bug, and what you expected to happen instead.
     validations:
       required: true
 
@@ -19,62 +15,14 @@ body:
     id: reproduction
     attributes:
       label: Steps to reproduce
-      description: Minimal steps to reproduce the behavior.
       placeholder: |
         1. Go to '...'
-        2. Click on '...'
-        3. See error
+        2. See error
     validations:
       required: true
 
   - type: textarea
-    id: expected
-    attributes:
-      label: Expected behavior
-      description: What you expected to happen.
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual
-    attributes:
-      label: Actual behavior
-      description: What actually happened. Include error messages, stack traces, or screenshots.
-    validations:
-      required: true
-
-  - type: input
-    id: version
-    attributes:
-      label: Version / commit
-      description: Which version, release, or commit SHA are you on?
-    validations:
-      required: true
-
-  - type: textarea
-    id: environment
-    attributes:
-      label: Environment
-      description: OS, browser, runtime version, deployment target, etc.
-      placeholder: |
-        - OS: macOS 14.5
-        - Node: 20.11.0
-        - Browser: Chrome 124
-
-  - type: dropdown
-    id: severity
-    attributes:
-      label: Severity
-      options:
-        - Low (cosmetic / minor inconvenience)
-        - Medium (degraded functionality, workaround exists)
-        - High (broken feature, no workaround)
-        - Critical (data loss / outage / security)
-    validations:
-      required: true
-
-  - type: textarea
-    id: additional
+    id: context
     attributes:
       label: Additional context
-      description: Logs, related issues, anything else worth knowing.
+      description: Logs, screenshots, version/commit, environment — anything helpful.

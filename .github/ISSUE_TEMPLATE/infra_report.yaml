@@ -1,77 +1,18 @@
 name: Infrastructure / DevOps
-description: CI, CD, deployments, dependencies, observability, security, or developer experience
+description: CI, CD, deployments, dependencies, observability, or developer experience
 title: "[Infra]: "
-labels: ["infrastructure", "triage"]
+labels: ["infrastructure"]
 body:
-  - type: dropdown
-    id: area
-    attributes:
-      label: Area
-      options:
-        - CI / build pipeline
-        - CD / deployment
-        - Dependencies / upgrades
-        - Observability (logging, metrics, tracing)
-        - Security (secrets, scanning, vulnerabilities)
-        - Performance / cost
-        - Developer experience (tooling, local setup)
-        - Database / storage
-        - Networking / DNS
-        - Other
-    validations:
-      required: true
-
   - type: textarea
     id: summary
     attributes:
       label: Summary
-      description: What needs to change and why?
+      description: What needs to change, and why?
     validations:
       required: true
-
-  - type: textarea
-    id: current
-    attributes:
-      label: Current state
-      description: How does it work today? Include relevant config, services, or repos.
-    validations:
-      required: true
-
-  - type: textarea
-    id: desired
-    attributes:
-      label: Desired state
-      description: What should it look like once this is done?
-    validations:
-      required: true
-
-  - type: dropdown
-    id: risk
-    attributes:
-      label: Risk level
-      options:
-        - Low (isolated change, easy to revert)
-        - Medium (touches shared systems)
-        - High (affects production, hard to revert)
-    validations:
-      required: true
-
-  - type: textarea
-    id: rollout
-    attributes:
-      label: Rollout / rollback plan
-      description: How will this be deployed safely? How do we back out if it goes wrong?
-
-  - type: textarea
-    id: acceptance
-    attributes:
-      label: Acceptance criteria
-      placeholder: |
-        - [ ] ...
-        - [ ] ...
 
   - type: textarea
     id: context
     attributes:
       label: Additional context
-      description: Dashboards, alerts, runbooks, related incidents or PRs.
+      description: Current state, desired state, risks, related PRs or incidents.
