@@ -1,18 +1,17 @@
-name: Infrastructure / DevOps
-description: CI, CD, deployments, dependencies, observability, or developer experience
-title: "[Infra]: "
-labels: ["infra"]
-body:
-  - type: textarea
-    id: summary
-    attributes:
-      label: Summary
-      description: What needs to change, and why?
-    validations:
-      required: true
+## Summary
 
-  - type: textarea
-    id: context
-    attributes:
-      label: Additional context
-      description: Current state, desired state, risks, related PRs or incidents.
+<!-- What does this PR do and why? -->
+
+## Testing
+
+<!-- How did you verify it? e.g. ran pytest, tried a sample run. -->
+
+## Checklist
+
+- [ ] Tests pass locally
+- [ ] No leftover debug (`print()` / `breakpoint()`)
+- [ ] Docs updated if behavior changed
+
+## Notes
+
+<!-- Additional notes -->
