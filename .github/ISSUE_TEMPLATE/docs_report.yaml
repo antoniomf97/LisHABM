@@ -1,0 +1,26 @@
+name: Documentation
+description: Report missing, unclear, or outdated documentation
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: location
+    attributes:
+      label: What docs are affected?
+      description: Link the file, section, or page — or say where docs are missing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong or missing?
+      description: Describe what's unclear, incorrect, outdated, or absent.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Suggested wording, references, related issues — anything helpful.
