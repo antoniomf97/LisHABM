@@ -1,0 +1,60 @@
+# .gitattributes
+# Normalize line endings: store everything as LF in the repo.
+# Working directory line endings depend on .editorconfig / editor settings.
+* text=auto eol=lf
+
+# ── Explicitly mark known text files (defensive) ──
+*.py        text eol=lf
+*.pyi       text eol=lf
+*.md        text eol=lf
+*.rst       text eol=lf
+*.txt       text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.toml      text eol=lf
+*.json      text eol=lf
+*.cfg       text eol=lf
+*.ini       text eol=lf
+*.sh        text eol=lf
+.gitignore  text eol=lf
+.gitattributes text eol=lf
+
+# ── Windows-specific scripts: keep CRLF ──
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+
+# ── Binary files: never try to convert or diff as text ──
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.pdf       binary
+*.zip       binary
+*.gz        binary
+*.tar       binary
+*.parquet   binary
+*.xlsx      binary
+*.xls       binary
+*.db        binary
+*.sqlite    binary
+*.sqlite3   binary
+*.pkl       binary
+*.npy       binary
+*.npz       binary
+
+# ── Data files: text but with LF (you may or may not commit these) ──
+*.csv       text eol=lf
+*.tsv       text eol=lf
+
+# ── Notebooks: text, but mark for special diff handling ──
+*.ipynb     text eol=lf
+
+# ── Exclude from `git archive` (release tarballs) ──
+.github/        export-ignore
+.gitattributes  export-ignore
+.gitignore      export-ignore
+.editorconfig   export-ignore
+.pre-commit-config.yaml export-ignore
+tests/          export-ignore
