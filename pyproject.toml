@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ── Project metadata ─────────────────────────────────────────
+[project]
+name = "lishabm"
+version = "0.1.0"
+description = "Lisbon housing-market agent-based model"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+authors = [
+    { name = "antoniomf97", email = "antonio.mf97@gmail.com" },
+    { name = "ReginaBDuarte", email = "regina_duarte@outlook.pt" },
+]
+
+# ── Project metadata ─────────────────────────────────────────
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "pre-commit",
+]
+
+# ── Hatchling: tell it where the package lives ───────────────
+[tool.hatch.build.targets.wheel]
+packages = ["engine", "orchestration"]
+
+# ── Ruff: linting & formatting ───────────────────────────────
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+# ── mypy (optional but worth setting up early) ───────────────
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+files = ["engine", "orchestration"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
