@@ -1,15 +1,16 @@
 from __future__ import annotations
+from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
 from typing import Annotated, Literal
 
 
 class Region(BaseModel):
-    UUID: int
+    id: UUID = Field(default_factory=uuid4)
     name: str
     neighborhood: list[Region] = Field(default_factory=list)
     
 class Person(BaseModel):
-    UUID: int
+    id: UUID = Field(default_factory=uuid4)
     age: int
     parents: list[Person] = Field(default_factory=list)
     children: list[Person] = Field(default_factory=list)
@@ -19,7 +20,7 @@ class Person(BaseModel):
     nationality: str
 
 class Household(BaseModel):
-    UUID: int
+    id: UUID = Field(default_factory=uuid4)
     members: list[Person] = Field(default_factory=list)
     rent: float
     contracts: list[Contracts] = Field(default_factory=list)
@@ -32,7 +33,7 @@ class Household(BaseModel):
   
   
 class House(BaseModel):
-    UUID: int
+    id: UUID = Field(default_factory=uuid4)
     age: int
     evaluation_price: float
     selling_price: float
@@ -48,7 +49,7 @@ class House(BaseModel):
 
 
 class Contracts(BaseModel):
-    UUID: int
+    id: UUID = Field(default_factory=uuid4)
     house: House
     tenant: Household
     landlord: Household | Constructor
@@ -56,7 +57,7 @@ class Contracts(BaseModel):
     duration: int
 
 class Loan(BaseModel):
-    UUID: int
+    id: UUID = Field(default_factory=uuid4)
     house: House
     remaining_morgtage: float
     paid_mortgage: float
@@ -66,7 +67,7 @@ class Loan(BaseModel):
     tax_type: Literal['fixed', 'variable']
 
 class Constructor(BaseModel):
-    UUID: int
+    id: UUID = Field(default_factory=uuid4)
     capital: float
     loans: list[Loan] = Field(default_factory=list)
     pending_houses: list[House] = Field(default_factory=list)
