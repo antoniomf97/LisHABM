@@ -202,4 +202,3 @@ Please pick the closest one rather than opening a blank issue. For
 open-ended questions or design discussion, use
 [GitHub Discussions](https://github.com/antoniomf97/LisHABM/discussions)
 instead of an issue.
-
