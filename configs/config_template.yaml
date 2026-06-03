@@ -1,0 +1,53 @@
+# =============================================================
+# LisHABM run configuration — TEMPLATE
+# -------------------------------------------------------------
+# Copy this file (e.g. configs/baseline.yaml), fill in values,
+# and pass it to the runner. Every section maps to a Pydantic
+# sub-config so values are validated on load.
+# =============================================================
+
+# ── Run metadata ─────────────────────────────────────────────
+run:
+  name: template          # used to name the output directory
+  description: "Describe the scenario this config represents."
+
+# ── Engine (everything the Simulator sees) ───────────────────
+# The Simulator receives only this block — it knows nothing about
+# run metadata or output paths.
+engine:
+
+  sim:
+    n_ticks: 1000           # number of ticks to simulate
+    seed: 42                # RNG seed — fixes reproducibility
+
+  # Where the initial world comes from. The I/O layer loads it from
+  # data/ based on `source`; the Simulator stays blind to which.
+  #   real      -> agent data files under `path`
+  #   synthetic -> generated from a recipe under `path`
+  scenario:
+    source: synthetic                 # real | synthetic
+    path: data/synthetic/baseline     # directory under data/
+
+  # Module parameters — grow as engine/modules/* are implemented.
+  demographics:
+    enabled: true
+    # birth_rate: ...
+
+  construction:
+    enabled: true
+    # new_builds_per_tick: ...
+
+  market:
+    enabled: true
+    # interest_rate: 0.03
+
+  # ── Output ─────────────────────────────────────────────────
+  # Owned by the I/O layer; the runner never inspects these.
+  output:
+    dir: data/outputs      # results written under output.dir / run.name
+    format: csv            # csv | pickle
+    every_n_ticks: 10      # snapshot cadence
+    record:                # which agent populations to snapshot
+      - households
+      - houses
+      - market

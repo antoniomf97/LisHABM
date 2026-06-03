@@ -18,4 +18,7 @@ repos:
     rev: v1.11.0
     hooks:
       - id: mypy
-        additional_dependencies: [pydantic]
+        # Run on the whole project (per config `files`) instead of the
+        # changed files, so module paths resolve consistently from the root.
+        pass_filenames: false
+        additional_dependencies: [pydantic, types-PyYAML]
