@@ -10,7 +10,11 @@ class Simulator:
         self.config = config
         self.clock = Clock()
         self.rng = random.Random(config.sim.seed)
-        self.scenario = load_scenario(config.scenario)
+        self.initialize_scenario(config)
+
+    def initialize_scenario(self, config):
+        scenario = load_scenario(config.scenario)
+        # TODO
 
     def step(self) -> None:
         # call demographics module

@@ -30,8 +30,7 @@ def _resolve_config(arg: str) -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """CLI: run the simulation for a config name or path.
-    """
+    """CLI: run the simulation for a config name or path."""
     parser = argparse.ArgumentParser(
         prog="lishabm", description="Run LisHABM simulation."
     )
