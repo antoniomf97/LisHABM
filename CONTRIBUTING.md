@@ -40,6 +40,8 @@ To run all hooks manually against every tracked file:
 pre-commit run --all-files
 ```
 
+**NOTE:** you must first add to the files to the track with `git add <file>`.
+
 ---
 
 ## 2. Code style
@@ -47,7 +49,7 @@ pre-commit run --all-files
 The project uses **[Ruff](https://docs.astral.sh/ruff/)** for linting and
 formatting, configured in [pyproject.toml](pyproject.toml):
 
-- Line length: **100**
+- Line length: **88**
 - Lint rules: `E` (pycodestyle errors), `F` (pyflakes), `I` (import sorting)
 
 Run locally:
