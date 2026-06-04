@@ -2,7 +2,7 @@ import random
 
 from pydantic import BaseModel
 
-from engine.core.agents import Constructor, Household, House, Region
+from engine.core.agents import Constructor, House, Household, Region
 from engine.core.clock import Clock
 
 
