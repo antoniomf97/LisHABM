@@ -2,7 +2,6 @@
 
 <!-- What does this PR do and why? -->
 
-<!-- Closes #123 -->
 This PR closes #
 
 ## Testing
