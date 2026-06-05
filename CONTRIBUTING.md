@@ -158,11 +158,10 @@ We use a simple **feature-branch + pull request** model:
 
 1. **Create a branch** off `master`. We use the convention
    `<your_initials>/<short-description>` so it's always clear who owns a
-   branch:
+   branch. Example:
    ```bash
    git checkout -b af/market-clearing
    git checkout -b rd/scheduler-deadlock
-   git checkout -b af/contributing-guide
    ```
 
 2. **Commit in small, signed, logical units.** Each commit message should
@@ -176,17 +175,16 @@ We use a simple **feature-branch + pull request** model:
    ```
 
 3. **Push and open a PR** against `master`. The [PR template](.github/pull_request_template.md)
-   asks for a summary, testing notes, and a short checklist. Please fill
+   asks for a summary, testing notes, and additional information. Please fill
    them in.
 
 4. **Get a review.** Because of [CODEOWNERS](.github/CODEOWNERS), the other maintainer is auto-requested. At least one approval is required before merge. Address review comments with follow-up commits (don't force-push during review, it makes re-review harder).
 
-5. **Merge.** Squash-merge is preferred for small PRs (keeps `master` linear
-   and readable); regular merge commits are fine for larger feature branches with meaningful intermediate history.
+5. **Merge.** Squash-merge is mandatory (keeps `master` linearand readable); regular merge commits are fine for larger feature branches with meaningful intermediate history.
 
 6. **Delete the branch** after merging.
 
-Direct pushes to `master` should be avoided, even for "tiny" changes. You must run them through a PR to keep CI and review consistent.
+Direct pushes to `master` are forbidden, even for "tiny" changes. You must run them through a PR to keep CI and review consistent.
 
 ---
 

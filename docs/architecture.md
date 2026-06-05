@@ -10,7 +10,10 @@
 YAML files that define a run. Each file maps to the Pydantic schema in `orchestration/config.py`.
 
 ### `orchestration/`
-Owns the run lifecycle. `runner.py` loads the config, drives the simulator, and delegates output aggregation to `assembler.py`. `configs.py` holds `RunConfig` and `load_config`. It is the only place that reads YAML.
+Owns the run lifecycle. 
+- **`runner.py`** — loads the config, drives the simulator, and delegates output aggregation to `assembler.py`. 
+- **`configs.py`** — holds `RunConfig` and `load_config`. It is the only place that reads YAML.
+- **`scheduler/`** — under active design
 
 ### `engine/`
 The simulation core. Knows nothing about how it was launched or how results are stored.
@@ -19,6 +22,7 @@ The simulation core. Knows nothing about how it was launched or how results are 
 - **`core/`** — `simulator.py` holds the simulation; `clock.py` tracks simulation time; `agents.py` defines agent types.
 - **`modules/`** — demographics, construction, and market sub-models. Each receives its own config slice.
 - **`io/`** — `scenario.py` loads the initial scenario (real or synthetic); `output.py` writes snapshots.
+- **`parallel/`** — under active design
 
 ### `data/`
 All data lives here — real input data, synthetic generation recipes, and run outputs.
