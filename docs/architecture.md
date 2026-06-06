@@ -10,8 +10,8 @@
 YAML files that define a run. Each file maps to the Pydantic schema in `orchestration/config.py`.
 
 ### `orchestration/`
-Owns the run lifecycle. 
-- **`runner.py`** — loads the config, drives the simulator, and delegates output aggregation to `assembler.py`. 
+Owns the run lifecycle.
+- **`runner.py`** — loads the config, drives the simulator, and delegates output aggregation to `assembler.py`.
 - **`configs.py`** — holds `RunConfig` and `load_config`. It is the only place that reads YAML.
 - **`scheduler/`** — under active design
 
