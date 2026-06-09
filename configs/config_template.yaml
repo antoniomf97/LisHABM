@@ -6,10 +6,14 @@
 # sub-config so values are validated on load.
 # =============================================================
 
-# ── Run metadata ─────────────────────────────────────────────
-run:
-  name: template          # used to name the output directory
-  description: "Describe the scenario this config represents."
+# ── Runs (identity + how many times to repeat, across how many cores) ──
+# `name` labels the run and names its output directory. All runs use the
+# engine config below; only the RNG seed varies per run (seed, seed+1, …),
+# so results can be averaged across runs.
+runs:
+  name: template          # labels the run; names the output directory
+  n_runs: 100              # number of identical runs to execute
+  n_workers: 10             # cores to use; blank → cpu_count() - 1
 
 # ── Engine (everything the Simulator sees) ───────────────────
 # The Simulator receives only this block — it knows nothing about
@@ -44,7 +48,7 @@ engine:
   # ── Output ─────────────────────────────────────────────────
   # Owned by the I/O layer; the runner never inspects these.
   output:
-    dir: data/outputs      # results written under output.dir / run.name
+    dir: data/outputs      # results written under output.dir / runs.name
     format: csv            # csv | pickle
     every_n_ticks: 10      # snapshot cadence
     record:                # which agent populations to snapshot

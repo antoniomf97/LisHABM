@@ -8,15 +8,8 @@ def test_load_config_valid(tmp_path, minimal_yaml):
     f = tmp_path / "config.yaml"
     f.write_text(minimal_yaml)
     config = load_config(f)
-    assert config.run.name == "test"
+    assert config.runs.name == "test"
     assert config.engine.scenario.source == "synthetic"
-
-
-def test_load_config_run_description_defaults_to_empty(tmp_path, minimal_yaml):
-    f = tmp_path / "config.yaml"
-    f.write_text(minimal_yaml)
-    config = load_config(f)
-    assert config.run.description == ""
 
 
 def test_load_config_empty_file_raises(tmp_path):
@@ -28,7 +21,7 @@ def test_load_config_empty_file_raises(tmp_path):
 
 def test_load_config_missing_scenario_raises(tmp_path):
     f = tmp_path / "config.yaml"
-    f.write_text("run:\n  name: test\nengine:\n  sim:\n    n_ticks: 10\n")
+    f.write_text("runs:\n  name: test\nengine:\n  sim:\n    n_ticks: 10\n")
     with pytest.raises(ValidationError):
         load_config(f)
 

@@ -17,7 +17,7 @@ from engine.config import EngineConfig, ScenarioConfig, SimConfig
 def minimal_yaml() -> str:
     """A minimal but valid run-config YAML document."""
     return """\
-run:
+runs:
   name: test
 engine:
   sim:

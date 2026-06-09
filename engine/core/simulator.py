@@ -26,3 +26,4 @@ class Simulator:
     def run(self) -> None:
         while self.clock.tick < self.config.sim.n_ticks:
             self.step()
+        print("Simulation complete")
