@@ -7,6 +7,8 @@ come back as a list of finished Simulators, ready for downstream averaging.
 
 from multiprocessing import Pool, cpu_count
 
+from tqdm import tqdm
+
 from engine.config import EngineConfig
 from engine.core.simulator import Simulator
 
@@ -44,12 +46,17 @@ def run_all(
     engine_config: EngineConfig,
     n_runs: int,
     n_workers: int | None = None,
+    progress: bool = True,
 ) -> list[Simulator]:
     """Run ``engine_config`` ``n_runs`` times and return the finished sims.
 
     ``n_workers`` defaults to ``cpu_count() - 1`` (leaving one core free),
     floored at 1. A single run is executed in-process to skip pool startup
     and keep tracebacks readable when debugging.
+
+    A tqdm bar tracks completed runs (set ``progress=False`` to silence it).
+    Results use ``imap`` so the bar advances as each run finishes, while
+    submission order — and therefore the per-run seed order — is preserved.
     """
     workers = n_workers if n_workers is not None else max(1, cpu_count() - 1)
     configs = [_config_for_run(engine_config, i) for i in range(n_runs)]
@@ -58,4 +65,12 @@ def run_all(
         return [_run_single(configs[0])]
 
     with Pool(processes=workers) as pool:
-        return pool.map(_run_single, configs)
+        return list(
+            tqdm(
+                pool.imap(_run_single, configs),
+                total=n_runs,
+                desc="Runs",
+                unit="run",
+                disable=not progress,
+            )
+        )
