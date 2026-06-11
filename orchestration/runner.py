@@ -1,8 +1,9 @@
-"""Single-run entry point: config file in, finished Simulator out.
+"""Entry point: config file in, finished Simulators out.
 
 Loads and validates a YAML config, builds the scenario from it (real or
-synthetic — see engine/io/scenario.py), runs the simulation, and returns the
-finished Simulator.
+synthetic — see engine/io/scenario.py), and runs the simulation ``n_runs``
+times via the scheduler (one run per seed, in parallel). Returns the finished
+Simulators for downstream aggregation.
 """
 
 import argparse
@@ -10,17 +11,20 @@ from pathlib import Path
 
 from engine.core.simulator import Simulator
 from orchestration.config import load_config
+from orchestration.scheduler import run_all
 
 # CLI config names resolve to configs/<name>.yaml (relative to the cwd).
 CONFIG_DIR = Path("configs")
 
 
-def run(config_path: str | Path) -> Simulator:
-    """Run one simulation described by the config at ``config_path``."""
+def run(config_path: str | Path) -> list[Simulator]:
+    """Run all configured runs described by the config at ``config_path``."""
     config = load_config(config_path)
-    sim = Simulator(config.engine)
-    sim.run()
-    return sim
+    return run_all(
+        config.engine,
+        n_runs=config.runs.n_runs,
+        n_workers=config.runs.n_workers,
+    )
 
 
 def _resolve_config(arg: str) -> Path:
