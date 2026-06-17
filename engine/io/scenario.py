@@ -9,6 +9,7 @@ from typing import NamedTuple
 
 from engine.config import ScenarioConfig
 from engine.core.agents import Constructor, House, Household, Region
+import numpy as np
 
 
 class Scenario(NamedTuple):
@@ -33,6 +34,27 @@ def _read_real(scenario: ScenarioConfig) -> Scenario:
 
 
 def _generate_synthetic(scenario: ScenarioConfig) -> Scenario:
-    # TODO: read the recipe under data/<scenario.path> and delegate to the
-    # synthetic data generator (its own module, built later).
-    return Scenario([], [], [], [])
+    """
+    Generates a full synthetic scenario from a parsed YAML configuration dictionary.
+    """
+    # 1. Initialize the shared deterministic random generator
+    rng = np.random.default_rng(scenario["seed"])
+    
+    # 2. Generate Independent Entities
+    constructors = generate_constructors(scenario["constructors"], rng)
+    regions = generate_regions(scenario["geography"], rng)
+    
+    # 3. Generate Dependent Entities
+    houses = generate_houses(scenario["houses"], regions, constructors, rng)
+    households = generate_households(scenario["households"], regions, rng)
+
+    #quando crio households façp logo assign das casas
+    #generate em json e depois construtores no I/O. import so json que está no input syntetic
+    #gera jsons no data. 
+    
+    return Scenario(
+        regions=regions, 
+        households=households, 
+        houses=houses, 
+        constructors=constructors
+    )

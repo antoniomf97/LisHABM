@@ -29,7 +29,7 @@ class Household(BaseModel):
     rent: float
     contracts: list[Contracts] = Field(default_factory=list)
     mortgages: list[Loan] = Field(default_factory=list)
-    living_house: House
+    living_house: House | None = None
     houses: list[House] = Field(default_factory=list)
     preference: Region
     income: float
