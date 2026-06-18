@@ -3,14 +3,14 @@ seed: 42
 
 market_initialization:
   # 70% of the population will own their home, 30% will rent
-  target_homeownership_rate: 0.70 
-  
+  target_homeownership_rate: 0.70
+
   # The top 5% wealthiest households act as landlords/investors
-  investor_percentage: 0.5 
-  
+  investor_percentage: 0.5
+
   # How many EXTRA properties an investor tries to buy
-  max_investment_properties: 5 
-  
+  max_investment_properties: 5
+
   # Financial rules
   max_rent_to_income_ratio: 0.35 # Agents won't rent if it costs > 35% of income
   annual_rental_yield: 0.05 # Monthly rent = (House Value * 5%) / 12
@@ -28,7 +28,7 @@ geography:
     Loures: ["Odivelas", "Sintra", "Mafra", "Vila Franca de Xira", "Lisboa"]
     Mafra: ["Sintra", "Loures"]
     Vila Franca de Xira: ["Loures"]
-    
+
     # --- South Bank (Península de Setúbal) ---
     Almada: ["Seixal", "Sesimbra", "Lisboa"]
     Seixal: ["Almada", "Sesimbra", "Barreiro"]
@@ -74,7 +74,7 @@ houses:
     std_dev: 0.8
 
   # --- GEOGRAPHIC DISTRIBUTION & PRICING ---
-  
+
   regional_distribution:
     # Weights do not need to sum to 1.0; the Python code will normalize them.
     Lisboa: 10.0
@@ -83,7 +83,7 @@ houses:
     Oeiras: 4.0
     Almada: 4.0
     # The weight given to any region not explicitly listed above
-    default_weight: 1.0 
+    default_weight: 1.0
 
   regional_sqm_price:
     Lisboa:
@@ -111,12 +111,12 @@ houses:
 # 3. DEMOGRAPHICS & DEMAND
 households:
   total_count: 1000
-  
+
   archetypes:
     - name: "young_single"
       weight: 0.20 # Adjusted down slightly
       adults: 1
-      children: 
+      children:
         type: "constant"
         value: 0
       adult_age_range: [18, 30]
@@ -124,14 +124,14 @@ households:
         type: "lognormal"
         mean: 20000.0
         sigma: 0.3
-      education_weights: {1: 0.1, 2: 0.4, 3: 0.5} 
-    
+      education_weights: {1: 0.1, 2: 0.4, 3: 0.5}
+
     - name: "nuclear_family"
       weight: 0.35 # Adjusted down
       adults: 2
       children:
         type: "poisson"
-        lambda: 1.5 
+        lambda: 1.5
       adult_age_range: [30, 55]
       base_income:
         type: "lognormal"
@@ -144,7 +144,7 @@ households:
       adults: 1
       children:
         type: "uniform"
-        min: 1.0 
+        min: 1.0
         max: 3.99 # When cast to int in Python, this safely yields 1, 2, or 3 kids
       adult_age_range: [25, 50] # Slightly older than young singles, overlapping with nuclear
       base_income:
