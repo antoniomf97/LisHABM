@@ -24,7 +24,7 @@ def load_scenario(scenario: ScenarioConfig) -> Scenario:
     """Load the initial scenario described by ``scenario`` (from data/)."""
     if scenario.source == "real":
         return _read_real(scenario)
-    return _generate_synthetic(scenario)
+    return _read_synthetic(scenario)
 
 
 def _read_real(scenario: ScenarioConfig) -> Scenario:
@@ -32,7 +32,6 @@ def _read_real(scenario: ScenarioConfig) -> Scenario:
     return Scenario([], [], [], [])
 
 
-def _generate_synthetic(scenario: ScenarioConfig) -> Scenario:
-    # TODO: read the recipe under data/<scenario.path> and delegate to the
-    # synthetic data generator (its own module, built later).
+def _read_synthetic(scenario: ScenarioConfig) -> Scenario:
+    # TODO: load the agent data files under data/<scenario.path>.
     return Scenario([], [], [], [])

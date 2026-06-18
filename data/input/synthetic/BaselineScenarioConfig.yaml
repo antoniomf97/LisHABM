@@ -1,0 +1,167 @@
+# Global Simulation Parameters
+seed: 42
+
+market_initialization:
+  # 70% of the population will own their home, 30% will rent
+  target_homeownership_rate: 0.70
+
+  # The top 5% wealthiest households act as landlords/investors
+  investor_percentage: 0.5
+
+  # How many EXTRA properties an investor tries to buy
+  max_investment_properties: 5
+
+  # Financial rules
+  max_rent_to_income_ratio: 0.35 # Agents won't rent if it costs > 35% of income
+  annual_rental_yield: 0.05 # Monthly rent = (House Value * 5%) / 12
+
+# 1. GEOGRAPHY
+geography:
+  regions:
+    # --- North Bank (Grande Lisboa) ---
+    Lisboa: ["Oeiras", "Amadora", "Odivelas", "Loures", "Almada"]
+    Cascais: ["Sintra", "Oeiras"]
+    Oeiras: ["Cascais", "Sintra", "Amadora", "Lisboa"]
+    Amadora: ["Oeiras", "Sintra", "Odivelas", "Lisboa"]
+    Sintra: ["Cascais", "Oeiras", "Amadora", "Odivelas", "Loures", "Mafra"]
+    Odivelas: ["Amadora", "Sintra", "Loures", "Lisboa"]
+    Loures: ["Odivelas", "Sintra", "Mafra", "Vila Franca de Xira", "Lisboa"]
+    Mafra: ["Sintra", "Loures"]
+    Vila Franca de Xira: ["Loures"]
+
+    # --- South Bank (Península de Setúbal) ---
+    Almada: ["Seixal", "Sesimbra", "Lisboa"]
+    Seixal: ["Almada", "Sesimbra", "Barreiro"]
+    Barreiro: ["Seixal", "Moita"]
+    Moita: ["Barreiro", "Palmela", "Montijo"]
+    Montijo: ["Alcochete", "Palmela", "Moita"]
+    Alcochete: ["Montijo", "Palmela"]
+    Palmela: ["Montijo", "Alcochete", "Moita", "Setúbal", "Sesimbra"]
+    Setúbal: ["Palmela"]
+    Sesimbra: ["Almada", "Seixal", "Palmela"]
+
+# 2. MARKET SUPPLY
+constructors:
+  count: 3
+  size_distribution:
+    type: "uniform"
+    min: 10.0
+    max: 50.0
+  capital_distribution:
+    type: "lognormal"
+    mean: 5000000.0
+    sigma: 0.5
+
+houses:
+  total_count: 1200
+  #assumimos area em função da tipologia
+  # Structural attributes
+  typology_weights:
+    T0: 0.05
+    T1: 0.15
+    T2: 0.35
+    T3: 0.30
+    T4: 0.10
+    T5: 0.04
+    T6+: 0.01
+  age_distribution:
+    type: "uniform"
+    min: 0.0
+    max: 80.0
+  quality_distribution:
+    type: "normal"
+    mean: 3.0
+    std_dev: 0.8
+
+  # --- GEOGRAPHIC DISTRIBUTION & PRICING ---
+
+  regional_distribution:
+    # Weights do not need to sum to 1.0; the Python code will normalize them.
+    Lisboa: 10.0
+    Sintra: 8.0
+    Cascais: 5.0
+    Oeiras: 4.0
+    Almada: 4.0
+    # The weight given to any region not explicitly listed above
+    default_weight: 1.0
+
+  regional_sqm_price:
+    Lisboa:
+      type: "normal"
+      mean: 4500.0
+      std_dev: 800.0
+    Cascais:
+      type: "normal"
+      mean: 4200.0
+      std_dev: 700.0
+    Oeiras:
+      type: "normal"
+      mean: 3500.0
+      std_dev: 600.0
+    Sintra:
+      type: "normal"
+      mean: 2200.0
+      std_dev: 400.0
+    # The price distribution for any region not explicitly listed
+    default_price:
+      type: "normal"
+      mean: 1800.0
+      std_dev: 300.0
+
+# 3. DEMOGRAPHICS & DEMAND
+households:
+  total_count: 1000
+
+  archetypes:
+    - name: "young_single"
+      weight: 0.20 # Adjusted down slightly
+      adults: 1
+      children:
+        type: "constant"
+        value: 0
+      adult_age_range: [18, 30]
+      base_income:
+        type: "lognormal"
+        mean: 20000.0
+        sigma: 0.3
+      education_weights: {1: 0.1, 2: 0.4, 3: 0.5}
+
+    - name: "nuclear_family"
+      weight: 0.35 # Adjusted down
+      adults: 2
+      children:
+        type: "poisson"
+        lambda: 1.5
+      adult_age_range: [30, 55]
+      base_income:
+        type: "lognormal"
+        mean: 45000.0
+        sigma: 0.4
+      education_weights: {1: 0.2, 2: 0.5, 3: 0.3}
+
+    - name: "single_parent"
+      weight: 0.15 # New! 15% of the population
+      adults: 1
+      children:
+        type: "uniform"
+        min: 1.0
+        max: 3.99 # When cast to int in Python, this safely yields 1, 2, or 3 kids
+      adult_age_range: [25, 50] # Slightly older than young singles, overlapping with nuclear
+      base_income:
+        type: "lognormal"
+        mean: 25000.0 # Higher than young single (older), but lower than dual-income nuclear
+        sigma: 0.35
+      education_weights: {1: 0.2, 2: 0.5, 3: 0.3}
+
+    - name: "retired_couple"
+      weight: 0.30
+      adults: 2
+      children:
+        type: "constant"
+        value: 0
+      adult_age_range: [65, 90]
+      base_income:
+        type: "normal"
+        mean: 25000.0
+        std_dev: 5000.0
+      education_weights: {1: 0.4, 2: 0.4, 3: 0.2} # Older generations often have different baseline education distributions
