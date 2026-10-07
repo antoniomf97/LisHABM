@@ -20,14 +20,8 @@ to [antonio.mf97@gmail.com](mailto:antonio.mf97@gmail.com).
 git clone https://github.com/antoniomf97/LisHABM.git
 cd LisHABM
 
-python -m venv venv
-# Linux / macOS:
-source venv/bin/activate
-# Windows (PowerShell):
-venv\Scripts\Activate.ps1
-
-pip install -e ".[dev]"
-pre-commit install
+uv sync --extra dev
+uv run pre-commit install
 ```
 
 The last command installs the pre-commit hooks, which run automatically on
@@ -55,8 +49,8 @@ formatting, configured in [pyproject.toml](pyproject.toml):
 Run locally:
 
 ```bash
-ruff check .
-ruff format .
+uv run ruff check .
+uv run ruff format .
 ```
 
 Pre-commit will do this for you, but running it manually is faster while
@@ -71,7 +65,7 @@ The package is type-checked with **mypy** in `strict` mode (see
 `orchestration/` should pass:
 
 ```bash
-mypy
+uv run mypy
 ```
 
 Tests are exempt from `disallow_untyped_defs`, so test helpers don't need
@@ -90,14 +84,14 @@ Tests are written with **pytest** and split into two layers:
 Run everything:
 
 ```bash
-pytest
+uv run pytest
 ```
 
 Run a single file or test:
 
 ```bash
-pytest tests/unit/test_clock.py
-pytest tests/unit/test_clock.py::test_advances_by_one_tick
+uv run pytest tests/unit/test_engine_clock.py
+uv run pytest tests/unit/test_engine_clock.py::test_advance_increments_by_one
 ```
 
 **Please add tests for any new functionality.** A unit test for new logic
