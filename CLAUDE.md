@@ -31,28 +31,28 @@ Agent-based model of the Lisbon Metropolitan Area housing market (households, ho
 Run everything from the repo root: config names and data paths resolve against the cwd.
 
 ```bash
-python -m venv .venv                 # activate: .venv\Scripts\Activate.ps1 (PowerShell) | source .venv/bin/activate
-pip install -e ".[dev]" numpy        # numpy: used only by the data generator, not declared in pyproject
-pre-commit install
+uv sync --extra dev                  # creates .venv, installs lishabm + dev tools, pinned by uv.lock
+uv run pre-commit install
 
-pytest                               # all tests
-pytest tests/unit/test_engine_simulator.py::test_step_advances_clock_by_one
-ruff check . && ruff format .        # rules E, F, I; line length 88
-mypy                                 # strict; checks engine/ and orchestration/ only
-pre-commit run --all-files           # what CI runs: whitespace, yaml, ruff, ruff-format, mypy
+uv run pytest                        # all tests
+uv run pytest tests/unit/test_engine_simulator.py::test_step_advances_clock_by_one
+uv run ruff check . && uv run ruff format .   # rules E, F, I; line length 88
+uv run mypy                          # strict; checks engine/ and orchestration/ only
+uv run pre-commit run --all-files    # what CI runs: whitespace, yaml, ruff, ruff-format, mypy
 
-lishabm config_template              # config name -> configs/<name>.yaml
-python main.py configs/config_template.yaml   # same, explicit path
+uv run lishabm config_template       # config name -> configs/<name>.yaml
+uv run python main.py configs/config_template.yaml   # same, explicit path
 ```
 
-- Venv not active: call its interpreter, e.g. `.venv/Scripts/python -m pytest` (Windows) or `.venv/bin/python -m pytest`.
-- With uv, use only `uv pip ...`. Never `uv sync`, `uv run` or `uv add`: they create `uv.lock`, and `uv sync` uninstalls undeclared packages (numpy).
+- `uv run <cmd>` runs inside `.venv` without activating it; activating (`.venv\Scripts\Activate.ps1` / `source .venv/bin/activate`) is optional for interactive use.
+- `uv.lock` is committed. Regenerate it with `uv lock` after any `pyproject.toml` dependency change, and commit the updated lock alongside.
+- The data generator's numpy dependency is declared as the `datagen` extra, not a main dependency: `uv sync --all-extras` pulls it in; `uv sync --extra dev` does not.
 
-**Done means** `pytest` and `pre-commit run --all-files` both pass.
+**Done means** `uv run pytest` and `uv run pre-commit run --all-files` both pass.
 
 - CI runs pre-commit on Python 3.11 and pytest on 3.11 and 3.13. Don't use syntax or stdlib features newer than 3.11, even when the local venv is newer.
-- Pre-commit pins ruff v0.6.9 and mypy v1.11.0, while `.[dev]` installs the latest of both. If they disagree, pre-commit decides.
-- The ruff hooks skip untracked files. For new files, also run `pre-commit run --files <paths>`.
+- Pre-commit pins ruff v0.6.9 and mypy v1.11.0, independently of whatever `uv.lock` resolves for the `dev` extra (currently ruff 0.16.10, mypy 2.4.0). If they disagree, pre-commit decides.
+- The ruff hooks skip untracked files. For new files, also run `uv run pre-commit run --files <paths>`.
 
 ## Architecture
 
@@ -97,9 +97,9 @@ Pydantic v2 models `Region`, `Person`, `Household`, `House`, `Contracts`, `Loan`
 ## Data
 
 - `data/input/synthetic/BaselineScenarioConfig.yaml`: the generation recipe (18 municipalities with adjacency, house typologies and prices, household archetypes, initial market assignment).
-- `data/input/synthetic/datageneration.py`: the generator. It needs the editable install (it imports `engine`) and numpy. It draws from `np.random.Generator`, whereas the Simulator uses `random.Random`. Its output is deterministic for a given recipe, except for ids. `--format json` fails (`Scenario` is a `NamedTuple` with no `model_dump_json`) and leaves an empty file behind.
+- `data/input/synthetic/datageneration.py`: the generator. It needs the editable install (it imports `engine`) and numpy (`datagen` extra: `uv sync --extra datagen`, or `uv sync --all-extras` for dev + datagen together). It draws from `np.random.Generator`, whereas the Simulator uses `random.Random`. Its output is deterministic for a given recipe, except for ids. `--format json` fails (`Scenario` is a `NamedTuple` with no `model_dump_json`) and leaves an empty file behind.
   ```bash
-  python data/input/synthetic/datageneration.py --config data/input/synthetic/BaselineScenarioConfig.yaml \
+  uv run python data/input/synthetic/datageneration.py --config data/input/synthetic/BaselineScenarioConfig.yaml \
       --outdir data/input/synthetic/scenarios --name BaselineScenario --format pickle
   ```
 - `data/input/synthetic/scenarios/BaselineScenario.pkl`: committed, about 1 MB, holding 18 regions, 1000 households, 1200 houses and 3 constructors. Never hand-edit it; regenerate it. Nothing loads it yet.
@@ -110,7 +110,6 @@ Pydantic v2 models `Region`, `Person`, `Household`, `House`, `Contracts`, `Loan`
 - `docs/architecture.md` and its diagram name `configs.py` (actual: `config.py`), and also `assembler.py`, `engine/io/output.py`, `data/generator.py` and `data/processor.py`, none of which exist.
 - `configs/config_template.yaml`: `scenario.path: data/synthetic/baseline` does not exist (the data is under `data/input/synthetic/`). `output.dir: data/outputs` matches the `OutputConfig.dir` default, but the folder is `data/output/`.
 - `BaselineScenarioConfig.yaml`: `investor_percentage: 0.5`, while its comment says 5%.
-- `CONTRIBUTING.md`: the test examples use `tests/unit/test_clock.py` (actual: `test_engine_clock.py`), and the venv directory is `venv` (README and this file: `.venv`).
 
 Mention a mismatch when it is relevant to the task. Don't fix one as a side effect. Remove its entry in the PR that fixes it.
 

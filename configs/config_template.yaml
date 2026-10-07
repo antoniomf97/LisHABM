@@ -12,7 +12,7 @@
 # so results can be averaged across runs.
 runs:
   name: template          # labels the run; names the output directory
-  n_runs: 100              # number of identical runs to execute
+  n_runs: 1000              # number of identical runs to execute
   n_workers: 10             # cores to use; blank → cpu_count() - 1
 
 # ── Engine (everything the Simulator sees) ───────────────────
@@ -21,7 +21,7 @@ runs:
 engine:
 
   sim:
-    n_ticks: 1000           # number of ticks to simulate
+    n_ticks: 100000         # number of ticks to simulate
     seed: 42                # RNG seed — fixes reproducibility
 
   # Where the initial world comes from. The I/O layer loads it from

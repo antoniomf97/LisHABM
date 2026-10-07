@@ -24,22 +24,18 @@ extras:
 git clone https://github.com/antoniomf97/LisHABM.git
 cd LisHABM
 
-python -m venv .venv
-# Linux / macOS:
-source .venv/bin/activate
-# Windows (PowerShell):
-.venv\Scripts\Activate.ps1
-
-pip install -e ".[dev]"
+uv sync --extra dev
 ```
 
-This installs the `lishabm` package, plus the development tools used by the
-project: `pytest`, `ruff`, and `pre-commit`.
+This creates a `.venv` and installs the `lishabm` package, plus the
+development tools used by the project: `pytest`, `ruff`, and `pre-commit`.
+`uv run <command>` runs a command inside that environment without needing
+to activate it.
 
 ## Running the tests
 
 ```bash
-pytest
+uv run pytest
 ```
 
 Tests live under [tests/](tests/), split into [tests/unit/](tests/unit/) and

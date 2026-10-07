@@ -30,6 +30,9 @@ dev = [
     "pre-commit",
     "types-PyYAML",
 ]
+datagen = [
+    "numpy",
+]
 
 # ── Console entry point: `lishabm <config>` ──────────────────
 [project.scripts]
