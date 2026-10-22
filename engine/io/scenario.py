@@ -7,6 +7,8 @@ to where it came from.
 
 from typing import NamedTuple
 
+import yaml
+
 from engine.config import ScenarioConfig
 from engine.core.agents import Constructor, House, Household, Region
 
@@ -33,5 +35,14 @@ def _read_real(scenario: ScenarioConfig) -> Scenario:
 
 
 def _read_synthetic(scenario: ScenarioConfig) -> Scenario:
-    # TODO: load the agent data files under data/<scenario.path>.
-    return Scenario([], [], [], [])
+    """Generate the scenario from the recipe YAML at ``scenario.path``.
+
+    The generator (``data/input/synthetic/generator.py``) itself imports
+    ``Scenario`` from this module, so this import is deferred to call time:
+    importing it at module load time would be a circular import (this module
+    isn't fully defined yet the first time it's loaded).
+    """
+    from data.input.synthetic.generator import _generate_synthetic
+
+    config = yaml.safe_load(scenario.path.read_text(encoding="utf-8"))
+    return _generate_synthetic(config)

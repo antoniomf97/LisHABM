@@ -18,6 +18,12 @@ def test_run_advances_clock_to_n_ticks(make_engine_config):
     assert sim.clock.tick == 5
 
 
+def test_run_without_progress_advances_clock_to_n_ticks(make_engine_config):
+    sim = Simulator(make_engine_config(n_ticks=5))
+    sim.run(progress=False)
+    assert sim.clock.tick == 5
+
+
 def test_run_zero_ticks_does_not_advance(make_engine_config):
     sim = Simulator(make_engine_config(n_ticks=0))
     sim.run()

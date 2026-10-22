@@ -13,7 +13,7 @@ from engine.config import EngineConfig
 from engine.core.simulator import Simulator
 
 
-def _run_single(engine_config: EngineConfig) -> Simulator:
+def _run_single(engine_config: EngineConfig, progress: bool = False) -> Simulator:
     """Build and run one Simulator. Top-level so it is picklable for spawn.
 
     On Windows (and macOS by default) multiprocessing uses the *spawn* start
@@ -22,7 +22,7 @@ def _run_single(engine_config: EngineConfig) -> Simulator:
     module scope.
     """
     sim = Simulator(engine_config)
-    sim.run()
+    sim.run(progress=progress)
     return sim
 
 
@@ -62,7 +62,7 @@ def run_all(
     configs = [_config_for_run(engine_config, i) for i in range(n_runs)]
 
     if n_runs == 1:
-        return [_run_single(configs[0])]
+        return [_run_single(configs[0], progress=progress)]
 
     with Pool(processes=workers) as pool:
         return list(

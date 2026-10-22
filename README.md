@@ -32,6 +32,28 @@ development tools used by the project: `pytest`, `ruff`, and `pre-commit`.
 `uv run <command>` runs a command inside that environment without needing
 to activate it.
 
+## Usage
+
+Run a simulation from a config file under
+[configs/simulation/](configs/simulation/), either by name or by path:
+
+```bash
+uv run lishabm config_template
+# equivalent:
+uv run python main.py configs/simulation/config_template.yaml
+```
+
+A config describes how many runs to repeat (`runs.n_runs`), on how many
+worker processes (`runs.n_workers`), and the engine settings every run
+shares — number of ticks, RNG seed, and where the initial scenario (real or
+synthetically generated) comes from. Copy
+[configs/simulation/config_template.yaml](configs/simulation/config_template.yaml)
+to start a new one; every field is validated on load.
+
+> As the status note above says, the simulation modules are still stubs: a
+> run currently just advances a clock and returns the finished runs in
+> memory, without writing anything to [data/output/](data/output/) yet.
+
 ## Running the tests
 
 ```bash
@@ -55,7 +77,9 @@ LisHABM/
 │   └── parallel/        #   Intra-run parallel execution
 ├── orchestration/       # Sweeps and scheduling across runs
 │   └── scheduler/
-├── configs/             # Simulation configuration files
+├── configs/             # Configuration files
+│   ├── simulation/      #   Run configs (`lishabm <name>`)
+│   └── generator/       #   Data-generation recipes
 ├── data/
 │   ├── input/           #   Input datasets
 │   └── output/          #   Simulation outputs
