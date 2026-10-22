@@ -36,16 +36,16 @@ engine:
     cache: data/input/synthetic/scenarios/BaselineScenario.pkl     # optional
 
   # Module parameters — grow as engine/modules/* are implemented.
-  demographics:
-    enabled: true
-    # birth_rate: ...
+  # demographics:
+  #   enabled: true
+  #   # birth_rate: ...
 
-  construction:
-    enabled: true
-    # new_builds_per_tick: ...
+  # construction:
+  #   enabled: true
+  #   # new_builds_per_tick: ...
 
-  market:
-    enabled: true
+  # market:
+  #   enabled: true
     # interest_rate: 0.03
 
   # ── Output ─────────────────────────────────────────────────
