@@ -6,7 +6,7 @@ Maintainers: Claude Code loads this file into every session in this repo, for ev
 Claude Code strips this comment before the file reaches the model.
 -->
 
-# CLAUDE.md — LisHABM
+# CLAUDE.md — LisHMABS
 
 ## Role and working rules
 
@@ -78,7 +78,7 @@ Boundaries to keep:
 
 ## Status (verified 2026-10-07 at `2311e7d`)
 
-- **Working:** config schemas and YAML loader, CLI, multi-run scheduler, `Clock`, agent models, synthetic scenario generator (pickle output), `_read_synthetic` (reads the recipe YAML at `scenario.path` and calls the generator in-process). Unit tests cover config, clock, simulator, scenario loader, runner and scheduler; none cover `agents.py` or the generator.
+- **Working:** config schemas and YAML loader, CLI, multi-run scheduler, `Clock`, agent models, synthetic scenario generator (pickle output), `_read_synthetic` (unpickles `scenario.cache` if it exists; otherwise reads the recipe YAML at `scenario.path`, calls the generator in-process and, if `cache` is set, writes the pickle atomically). Unit tests cover config, clock, simulator, scenario loader, runner and scheduler; none cover `agents.py` or the generator.
 - **Stubs:** `Simulator.initialize_scenario` (loads the scenario, then discards it), `Simulator.step` (only advances the clock), `_read_real` (returns an empty `Scenario`; `ScenarioConfig.path` is never read for `source: real`), the module configs (`enabled` only), `OutputConfig` (defined, unused).
 - **Empty (`.gitkeep` only):** `engine/modules/*/`, `engine/parallel/`, `tests/integration/`, `scripts/`.
 - **Missing, though the docs reference them:** `engine/io/output.py` (snapshot writer driven by `OutputConfig`) and `orchestration/assembler.py` (aggregation across runs). `run()` returns the finished simulators and `main()` discards them, so a run writes nothing.
@@ -102,7 +102,7 @@ Pydantic v2 models `Region`, `Person`, `Household`, `House`, `Contracts`, `Loan`
   uv run python data/input/synthetic/generator.py --config configs/generator/synthetic/BaselineScenarioConfig.yaml \
       --outdir data/input/synthetic/scenarios --name BaselineScenario --format pickle
   ```
-- `data/input/synthetic/scenarios/BaselineScenario.pkl`: committed, about 1 MB, holding 18 regions, 1000 households, 1200 houses and 3 constructors. Never hand-edit it; regenerate it. Nothing loads it yet.
+- `data/input/synthetic/scenarios/BaselineScenario.pkl`: committed, about 1 MB, holding 18 regions, 1000 households, 1200 houses and 3 constructors. Never hand-edit it; regenerate it. The template config uses it as `scenario.cache`; nothing checks it against the recipe, so regenerate or delete it whenever the recipe or the generator changes.
 - `data/output/`: the intended home of run outputs. Empty.
 
 ## Known doc/code mismatches (trust the code)

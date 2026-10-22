@@ -1,7 +1,7 @@
-# LisHABM — Lisbon Housing Agent-Based Model
+# LisHABM — Lisbon Housing Market Agent-Based Simulation
 
 An agent-based model (ABM) of the Lisbon housing market, built for academic
-research into housing dynamics, demographics, and construction. LisHABM
+research into housing dynamics, demographics, and construction. LisHMABS
 simulates the interactions between households, dwellings, developers, and
 market mechanisms over time, with the aim of supporting policy analysis and
 exploratory scenario work.

@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 from engine.config import EngineConfig, ScenarioConfig
 from engine.core.clock import Clock
+from engine.io.scenario import load_scenario
 
 
 class Simulator:
@@ -14,7 +15,7 @@ class Simulator:
         self.initialize_scenario(config.scenario)
 
     def initialize_scenario(self, config: ScenarioConfig) -> None:
-        # scenario = load_scenario(config)
+        load_scenario(config)
 
         # print({name: len(items) for name, items in scenario._asdict().items()})
         pass

@@ -15,6 +15,7 @@ class Region(BaseModel):
 class Person(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     age: int
+    sex: str  # 0 = male, 1 = female
     parents: list[Person] = Field(default_factory=list)
     children: list[Person] = Field(default_factory=list)
     income: float

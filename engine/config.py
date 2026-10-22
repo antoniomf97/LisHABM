@@ -21,6 +21,7 @@ class SimConfig(BaseModel):
 class ScenarioConfig(BaseModel):
     source: Literal["real", "synthetic"]
     path: Path  # directory under data/ holding the data files or recipe
+    cache: Path | None = None  # synthetic only: pickle loaded if present, else written
 
 
 # ── Module parameters ────────────────────────────────────────

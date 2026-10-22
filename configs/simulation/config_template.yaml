@@ -27,10 +27,13 @@ engine:
   # Where the initial world comes from. The I/O layer loads it from
   # data/ based on `source`; the Simulator stays blind to which.
   #   real      -> agent data files under `path`
-  #   synthetic -> generated from a recipe under `path`
+  #   synthetic -> generated from a recipe under `path`, or loaded from
+  #                `cache` if that pickle exists (written there otherwise).
+  #                Delete the pickle after editing the recipe.
   scenario:
     source: synthetic                                              # real | synthetic
     path: configs/generator/synthetic/BaselineScenarioConfig.yaml  # recipe file
+    cache: data/input/synthetic/scenarios/BaselineScenario.pkl     # optional
 
   # Module parameters — grow as engine/modules/* are implemented.
   demographics:
