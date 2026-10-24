@@ -548,10 +548,3 @@ def main():
     except Exception as e:
         print(f"\n❌ An error occurred during generation:\n{e}")
         sys.exit(1)
-
-
-if __name__ == "__main__":
-    # how to run it:
-    # python datageneration.py --config housing_crash_config.yaml --name
-    # crash_scenario --format json
-    main()

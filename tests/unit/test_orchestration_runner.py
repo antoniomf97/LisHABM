@@ -6,7 +6,7 @@ from orchestration.runner import _resolve_config, main
 
 
 def test_resolve_name_only():
-    assert _resolve_config("baseline") == Path("configs/baseline.yaml")
+    assert _resolve_config("baseline") == Path("configs/simulation/baseline.yaml")
 
 
 def test_resolve_name_adds_yaml_suffix():
@@ -32,7 +32,17 @@ def test_main_missing_config_exits(tmp_path):
     assert exc.value.code == 2
 
 
-def test_main_runs_and_returns_zero(tmp_path, minimal_yaml):
+def test_main_runs_and_returns_zero(tmp_path, synthetic_recipe_path):
+    config_text = f"""\
+runs:
+  name: test
+engine:
+  sim:
+    n_ticks: 1
+  scenario:
+    source: synthetic
+    path: {synthetic_recipe_path.as_posix()}
+"""
     f = tmp_path / "test.yaml"
-    f.write_text(minimal_yaml)
+    f.write_text(config_text)
     assert main([str(f)]) == 0

@@ -13,8 +13,8 @@ from engine.core.simulator import Simulator
 from orchestration.config import load_config
 from orchestration.scheduler import run_all
 
-# CLI config names resolve to configs/<name>.yaml (relative to the cwd).
-CONFIG_DIR = Path("configs")
+# CLI config names resolve to configs/simulation/<name>.yaml (relative to the cwd).
+CONFIG_DIR = Path("configs") / "simulation"
 
 
 def run(config_path: str | Path) -> list[Simulator]:
@@ -40,7 +40,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "config",
-        help="config name in configs/, or a path to a .yaml file",
+        help="config name in configs/simulation/, or a path to a .yaml file",
     )
     args = parser.parse_args(argv)
     path = _resolve_config(args.config)

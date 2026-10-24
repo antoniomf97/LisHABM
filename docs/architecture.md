@@ -7,7 +7,8 @@
 ## Layers
 
 ### `configs/`
-YAML files that define a run. Each file maps to the Pydantic schema in `orchestration/config.py`.
+YAML files that define a run live under `configs/simulation/`. Each file maps to the Pydantic schema in `orchestration/config.py`.
+Data-generation recipes live under `configs/generator/` (e.g. `generator/synthetic/`).
 
 ### `orchestration/`
 Owns the run lifecycle.
@@ -25,7 +26,7 @@ The simulation core. Knows nothing about how it was launched or how results are 
 - **`parallel/`** — under active design
 
 ### `data/`
-All data lives here — real input data, synthetic generation recipes, and run outputs.
+All data lives here — real input data, generated scenarios, and run outputs.
 
 - **`generator.py`** — produces a synthetic `Scenario` from a recipe.
 - **`processor.py`** — cleans and loads real data files.

@@ -1,4 +1,4 @@
-"""Entry point: python main.py <config-name>  ->  configs/<name>.yaml"""
+"""Entry point: python main.py <config-name>  ->  configs/simulation/<name>.yaml"""
 
 from orchestration.runner import main
 

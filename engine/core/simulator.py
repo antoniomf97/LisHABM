@@ -1,5 +1,7 @@
 import random
 
+from tqdm import tqdm
+
 from engine.config import EngineConfig, ScenarioConfig
 from engine.core.clock import Clock
 from engine.io.scenario import load_scenario
@@ -14,6 +16,8 @@ class Simulator:
 
     def initialize_scenario(self, config: ScenarioConfig) -> None:
         load_scenario(config)
+
+        # print({name: len(items) for name, items in scenario._asdict().items()})
         pass
         # TODO
 
@@ -23,6 +27,9 @@ class Simulator:
         # call market module
         self.clock.advance()
 
-    def run(self) -> None:
-        while self.clock.tick < self.config.sim.n_ticks:
+    def run(self, progress: bool = True) -> None:
+        remaining = self.config.sim.n_ticks - self.clock.tick
+        for _ in tqdm(
+            range(remaining), desc="Ticks", unit="tick", disable=not progress
+        ):
             self.step()

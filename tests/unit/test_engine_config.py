@@ -27,6 +27,15 @@ def test_scenario_config_path_is_path_object(make_scenario_config):
     assert isinstance(scenario.path, Path)
 
 
+def test_scenario_config_cache_defaults_to_none(make_scenario_config):
+    assert make_scenario_config().cache is None
+
+
+def test_scenario_config_cache_is_path_object(make_scenario_config):
+    scenario = make_scenario_config(cache="data/test.pkl")
+    assert isinstance(scenario.cache, Path)
+
+
 def test_scenario_config_invalid_source_raises(make_scenario_config):
     with pytest.raises(ValidationError):
         make_scenario_config(source="unknown")

@@ -1,7 +1,7 @@
 # =============================================================
 # LisHABM run configuration — TEMPLATE
 # -------------------------------------------------------------
-# Copy this file (e.g. configs/baseline.yaml), fill in values,
+# Copy this file (e.g. configs/simulation/baseline.yaml), fill in values,
 # and pass it to the runner. Every section maps to a Pydantic
 # sub-config so values are validated on load.
 # =============================================================
@@ -12,7 +12,7 @@
 # so results can be averaged across runs.
 runs:
   name: template          # labels the run; names the output directory
-  n_runs: 1000              # number of identical runs to execute
+  n_runs: 100             # number of identical runs to execute
   n_workers: 10             # cores to use; blank → cpu_count() - 1
 
 # ── Engine (everything the Simulator sees) ───────────────────
@@ -21,16 +21,19 @@ runs:
 engine:
 
   sim:
-    n_ticks: 100000         # number of ticks to simulate
+    n_ticks: 1000            # number of ticks to simulate
     seed: 42                # RNG seed — fixes reproducibility
 
   # Where the initial world comes from. The I/O layer loads it from
   # data/ based on `source`; the Simulator stays blind to which.
   #   real      -> agent data files under `path`
-  #   synthetic -> generated from a recipe under `path`
+  #   synthetic -> generated from a recipe under `path`, or loaded from
+  #                `cache` if that pickle exists (written there otherwise).
+  #                Delete the pickle after editing the recipe.
   scenario:
-    source: synthetic                 # real | synthetic
-    path: data/synthetic/baseline     # directory under data/
+    source: synthetic                                              # real | synthetic
+    path: configs/generator/synthetic/BaselineScenarioConfig.yaml  # recipe file
+    cache: data/input/synthetic/scenarios/BaselineScenario.pkl     # optional
 
   # Module parameters — grow as engine/modules/* are implemented.
   demographics:
@@ -43,7 +46,7 @@ engine:
 
   market:
     enabled: true
-    # interest_rate: 0.03
+    interest_rate: 0.03
 
   # ── Output ─────────────────────────────────────────────────
   # Owned by the I/O layer; the runner never inspects these.

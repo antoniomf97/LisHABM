@@ -59,3 +59,12 @@ files = ["engine", "orchestration"]
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+# engine/io/scenario.py imports this module at call time (to avoid a
+# circular import); mypy still follows it even though it's outside `files`,
+# and it isn't written to strict standards (loose `dict` configs, no numpy
+# stubs available to the mypy hook). Only the call site's own typing
+# (the `_generate_synthetic(config: dict) -> Scenario` signature) matters.
+module = "data.input.synthetic.generator"
+ignore_errors = true

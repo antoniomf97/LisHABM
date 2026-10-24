@@ -6,7 +6,7 @@ Maintainers: Claude Code loads this file into every session in this repo, for ev
 Claude Code strips this comment before the file reaches the model.
 -->
 
-# CLAUDE.md — LisHABM
+# CLAUDE.md — LisHMABS
 
 ## Role and working rules
 
@@ -40,8 +40,8 @@ uv run ruff check . && uv run ruff format .   # rules E, F, I; line length 88
 uv run mypy                          # strict; checks engine/ and orchestration/ only
 uv run pre-commit run --all-files    # what CI runs: whitespace, yaml, ruff, ruff-format, mypy
 
-uv run lishabm config_template       # config name -> configs/<name>.yaml
-uv run python main.py configs/config_template.yaml   # same, explicit path
+uv run lishabm config_template       # config name -> configs/simulation/<name>.yaml
+uv run python main.py configs/simulation/config_template.yaml   # same, explicit path
 ```
 
 - `uv run <cmd>` runs inside `.venv` without activating it; activating (`.venv\Scripts\Activate.ps1` / `source .venv/bin/activate`) is optional for interactive use.
@@ -57,7 +57,7 @@ uv run python main.py configs/config_template.yaml   # same, explicit path
 ## Architecture
 
 ```
-configs/<name>.yaml
+configs/simulation/<name>.yaml
   -> orchestration/config.py          load_config() -> RunConfig{runs: RunsConfig, engine: EngineConfig}
   -> orchestration/runner.py          run(), main() (CLI entry point `lishabm`)
   -> orchestration/scheduler/pool.py  run_all(): n_runs configs, seed = base seed + run index,
@@ -78,8 +78,8 @@ Boundaries to keep:
 
 ## Status (verified 2026-10-07 at `2311e7d`)
 
-- **Working:** config schemas and YAML loader, CLI, multi-run scheduler, `Clock`, agent models, synthetic scenario generator (pickle output). Unit tests cover config, clock, simulator, scenario loader, runner and scheduler; none cover `agents.py` or the generator.
-- **Stubs:** `Simulator.initialize_scenario` (loads the scenario, then discards it), `Simulator.step` (only advances the clock), `_read_real` and `_read_synthetic` (return an empty `Scenario`; `ScenarioConfig.path` is never read), the module configs (`enabled` only), `OutputConfig` (defined, unused).
+- **Working:** config schemas and YAML loader, CLI, multi-run scheduler, `Clock`, agent models, synthetic scenario generator (pickle output), `_read_synthetic` (unpickles `scenario.cache` if it exists; otherwise reads the recipe YAML at `scenario.path`, calls the generator in-process and, if `cache` is set, writes the pickle atomically). Unit tests cover config, clock, simulator, scenario loader, runner and scheduler; none cover `agents.py` or the generator.
+- **Stubs:** `Simulator.initialize_scenario` (loads the scenario, then discards it), `Simulator.step` (only advances the clock), `_read_real` (returns an empty `Scenario`; `ScenarioConfig.path` is never read for `source: real`), the module configs (`enabled` only), `OutputConfig` (defined, unused).
 - **Empty (`.gitkeep` only):** `engine/modules/*/`, `engine/parallel/`, `tests/integration/`, `scripts/`.
 - **Missing, though the docs reference them:** `engine/io/output.py` (snapshot writer driven by `OutputConfig`) and `orchestration/assembler.py` (aggregation across runs). `run()` returns the finished simulators and `main()` discards them, so a run writes nothing.
 - **Undecided:** the time unit of a tick. Don't build one in. If a change needs it, stop and ask.
@@ -96,19 +96,19 @@ Pydantic v2 models `Region`, `Person`, `Household`, `House`, `Contracts`, `Loan`
 
 ## Data
 
-- `data/input/synthetic/BaselineScenarioConfig.yaml`: the generation recipe (18 municipalities with adjacency, house typologies and prices, household archetypes, initial market assignment).
-- `data/input/synthetic/datageneration.py`: the generator. It needs the editable install (it imports `engine`) and numpy (`datagen` extra: `uv sync --extra datagen`, or `uv sync --all-extras` for dev + datagen together). It draws from `np.random.Generator`, whereas the Simulator uses `random.Random`. Its output is deterministic for a given recipe, except for ids. `--format json` fails (`Scenario` is a `NamedTuple` with no `model_dump_json`) and leaves an empty file behind.
+- `configs/generator/synthetic/BaselineScenarioConfig.yaml`: the generation recipe (18 municipalities with adjacency, house typologies and prices, household archetypes, initial market assignment).
+- `data/input/synthetic/generator.py` (renamed from `datageneration.py`): the generator. It needs the editable install (it imports `engine`) and numpy (`datagen` extra: `uv sync --extra datagen`, or `uv sync --all-extras` for dev + datagen together). It draws from `np.random.Generator`, whereas the Simulator uses `random.Random`. Its output is deterministic for a given recipe, except for ids. `--format json` fails (`Scenario` is a `NamedTuple` with no `model_dump_json`) and leaves an empty file behind. `engine/io/scenario.py`'s `_read_synthetic` also imports `_generate_synthetic` from this module directly (a deferred import, to avoid a cycle — this module imports `Scenario` from `engine.io.scenario`), so a config with `scenario.source: synthetic` needs the `datagen` extra installed too, not just the standalone CLI below.
   ```bash
-  uv run python data/input/synthetic/datageneration.py --config data/input/synthetic/BaselineScenarioConfig.yaml \
+  uv run python data/input/synthetic/generator.py --config configs/generator/synthetic/BaselineScenarioConfig.yaml \
       --outdir data/input/synthetic/scenarios --name BaselineScenario --format pickle
   ```
-- `data/input/synthetic/scenarios/BaselineScenario.pkl`: committed, about 1 MB, holding 18 regions, 1000 households, 1200 houses and 3 constructors. Never hand-edit it; regenerate it. Nothing loads it yet.
+- `data/input/synthetic/scenarios/BaselineScenario.pkl`: committed, about 1 MB, holding 18 regions, 1000 households, 1200 houses and 3 constructors. Never hand-edit it; regenerate it. The template config uses it as `scenario.cache`; nothing checks it against the recipe, so regenerate or delete it whenever the recipe or the generator changes.
 - `data/output/`: the intended home of run outputs. Empty.
 
 ## Known doc/code mismatches (trust the code)
 
-- `docs/architecture.md` and its diagram name `configs.py` (actual: `config.py`), and also `assembler.py`, `engine/io/output.py`, `data/generator.py` and `data/processor.py`, none of which exist.
-- `configs/config_template.yaml`: `scenario.path: data/synthetic/baseline` does not exist (the data is under `data/input/synthetic/`). `output.dir: data/outputs` matches the `OutputConfig.dir` default, but the folder is `data/output/`.
+- `docs/architecture.md` and its diagram name `configs.py` (actual: `config.py`), and also `assembler.py`, `engine/io/output.py` and `data/processor.py`, none of which exist. It also names `data/generator.py`: a file of that name now exists, but at `data/input/synthetic/generator.py`, not the repo root.
+- `configs/simulation/config_template.yaml`: `output.dir: data/outputs` matches the `OutputConfig.dir` default, but the folder is `data/output/`.
 - `BaselineScenarioConfig.yaml`: `investor_percentage: 0.5`, while its comment says 5%.
 
 Mention a mismatch when it is relevant to the task. Don't fix one as a side effect. Remove its entry in the PR that fixes it.
@@ -118,7 +118,7 @@ Mention a mismatch when it is relevant to the task. Don't fix one as a side effe
 - Python 3.11 style: `X | None`, built-in generics, `pathlib.Path`. Keep paths OS-agnostic (Windows dev machines, Ubuntu CI).
 - `engine/` and `orchestration/` are mypy-strict: annotate everything. Tests are not type-checked.
 - Configs are Pydantic `BaseModel`s validated with constraints (`Field(gt=0)`, `Literal[...]`), not with manual checks.
-- New config parameter: add a typed field with a default in `engine/config.py` (`orchestration/config.py` for run metadata), mirror it in `configs/config_template.yaml`, and add a validation test.
+- New config parameter: add a typed field with a default in `engine/config.py` (`orchestration/config.py` for run metadata), mirror it in `configs/simulation/config_template.yaml`, and add a validation test.
 - New runtime dependency: add it to `[project].dependencies`. The mypy hook's environment holds only `pydantic` and `types-PyYAML` (`additional_dependencies` in `.pre-commit-config.yaml`), so any other import is `Any` there. Add the package or its stubs when its types matter.
 - Match the existing style: module docstrings that explain *why*, `# ── Section ──` banners in larger files, LF line endings, 4-space indent (2 for YAML, TOML and JSON).
 - This is research code. State every modelling assumption in the docstring and in the reply. Never invent Lisbon-specific empirical values: cite the source or mark the value as a placeholder.
