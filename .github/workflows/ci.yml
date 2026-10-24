@@ -40,7 +40,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
-      - name: Install package and dev tools
-        run: uv sync --extra dev
+      # datagen (numpy) is needed by the tests that generate synthetic scenarios.
+      - name: Install package, dev tools and datagen
+        run: uv sync --extra dev --extra datagen
       - name: Run tests
         run: uv run pytest
