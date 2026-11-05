@@ -46,3 +46,9 @@ engine:
     f = tmp_path / "test.yaml"
     f.write_text(config_text)
     assert main([str(f)]) == 0
+
+
+def test_main_invalid_log_level_exits(tmp_path):
+    with pytest.raises(SystemExit) as exc:
+        main([str(tmp_path / "config.yaml"), "--log-level", "LOUD"])
+    assert exc.value.code == 2

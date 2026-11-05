@@ -1,7 +1,8 @@
+import logging
 from collections.abc import Callable
 
 from engine.config import EngineConfig
-from orchestration.scheduler.pool import _config_for_run, run_all
+from orchestration.scheduler.pool import _config_for_run, _quiet_worker_logs, run_all
 
 
 def test_config_for_run_offsets_seed(
@@ -40,3 +41,28 @@ def test_run_all_derives_distinct_seeds(
 ) -> None:
     sims = run_all(make_engine_config(seed=42), n_runs=3, n_workers=2)
     assert [s.config.sim.seed for s in sims] == [42, 43, 44]
+
+
+def test_run_all_logs_each_finished_run_in_order(
+    make_engine_config: Callable[..., EngineConfig], caplog
+) -> None:
+    caplog.set_level(logging.INFO, logger="orchestration.scheduler.pool")
+    run_all(make_engine_config(seed=42), n_runs=3, n_workers=2, progress=False)
+    done = [r.getMessage().split(":")[0] for r in caplog.records]
+    assert done == [
+        "run 1/3 done (seed 42)",
+        "run 2/3 done (seed 43)",
+        "run 3/3 done (seed 44)",
+    ]
+
+
+def test_quiet_worker_logs_silences_engine_info() -> None:
+    engine_logger = logging.getLogger("engine")
+    old_level = engine_logger.level
+    try:
+        _quiet_worker_logs()
+        sim_logger = logging.getLogger("engine.core.simulator")
+        assert not sim_logger.isEnabledFor(logging.INFO)
+        assert sim_logger.isEnabledFor(logging.WARNING)
+    finally:
+        engine_logger.setLevel(old_level)

@@ -23,6 +23,7 @@ engine:
   sim:
     n_ticks: 1000            # number of ticks to simulate
     seed: 42                # RNG seed — fixes reproducibility
+    months_per_tick: 3      # length of one tick in months
 
   # Where the initial world comes from. The I/O layer loads it from
   # data/ based on `source`; the Simulator stays blind to which.
@@ -35,10 +36,10 @@ engine:
     path: configs/generator/synthetic/BaselineScenarioConfig.yaml  # recipe file
     cache: data/input/synthetic/scenarios/BaselineScenario.pkl     # optional
 
-  # Module parameters — grow as engine/modules/* are implemented.
-  demographics:
-    enabled: true
-    # birth_rate: ...
+  # Module parameters — grow as engine/modules/* are implemented. A module
+  # is either inline (a mapping) or a variant name, whose settings are read
+  # from <module>/<name>.yaml next to this file.
+  demographics: artificial   # -> demographics/artificial.yaml
 
   construction:
     enabled: true

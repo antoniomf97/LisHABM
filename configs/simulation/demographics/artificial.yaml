@@ -1,0 +1,36 @@
+# Artificial demographics: stylised rules, not calibrated to data.
+# Every rate is an ANNUAL probability in [0, 1], by age band (min_age and
+# max_age inclusive, whole years). Bands in a list must not overlap. An age
+# outside every band gets rate 0, and an empty list switches the event off.
+# ALL VALUES ARE PLACEHOLDERS. 0.0 means the event is off.
+model: artificial
+enabled: true
+adult_age: 18
+
+# Death, by sex. Bands must cover every age that occurs (e.g. 0–120), or
+# people outside them never die.
+mortality:
+  F:
+    - {min_age: 0, max_age: 120, rate: 0.0}   # PLACEHOLDER
+  M:
+    - {min_age: 0, max_age: 120, rate: 0.0}   # PLACEHOLDER
+
+# Birth: annual probability for EVERY woman in the band.
+fertility:
+  - {min_age: 15, max_age: 49, rate: 0.0}     # PLACEHOLDER
+female_birth_share: 0.5                       # PLACEHOLDER
+
+# Separation: annual probability per couple.
+separation_rate: 0.0                          # PLACEHOLDER
+
+# Partnership: annual probability that a single adult not living with a
+# parent enters the partner pool.
+partnership:
+  - {min_age: 18, max_age: 120, rate: 0.0}    # PLACEHOLDER
+max_partner_age_gap: 10                       # PLACEHOLDER
+
+# Leaving home: annual probability for an adult living with a parent whose
+# income is > 0 and >= min_income_to_leave.
+leave_home:
+  - {min_age: 18, max_age: 120, rate: 0.0}    # PLACEHOLDER
+min_income_to_leave: 0.0                      # PLACEHOLDER, € per year

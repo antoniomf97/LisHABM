@@ -41,6 +41,7 @@ uv run mypy                          # strict; checks engine/ and orchestration/
 uv run pre-commit run --all-files    # what CI runs: whitespace, yaml, ruff, ruff-format, mypy
 
 uv run lishabm config_template       # config name -> configs/simulation/<name>.yaml
+uv run lishabm config_template --log-level WARNING   # DEBUG|INFO|WARNING|ERROR, default INFO
 uv run python main.py configs/simulation/config_template.yaml   # same, explicit path
 ```
 
@@ -67,6 +68,10 @@ configs/simulation/<name>.yaml
        -> engine/modules/{demographics,construction,market}/   empty
 ```
 
+Config layout: a run config holds `runs`, and under `engine` the `sim`, `scenario` and `output` settings plus one entry per module. A module entry is either inline (a mapping) or a variant name: `load_config` reads `demographics: artificial` from `demographics/artificial.yaml` in the run config's own directory (for the template, `configs/simulation/demographics/artificial.yaml`). Each variant has its own schema, tagged by `model`. `DemographicsConfig` is an alias of the only one, `ArtificialDemographicsConfig`; construction and market are still inline only.
+
+Logging: modules log through `logging.getLogger(__name__)`, and only `orchestration/runner.py:main` configures handlers (`--log-level`, default INFO; lines are routed around the tqdm bars). The Simulator logs the loaded scenario sizes and `Simulator.summary()` (counts and mean age, never an agent) on the step that completes each simulated year. Pool workers raise the `engine` logger to WARNING, so with `n_runs > 1` only the parent's "run i/n done" lines appear.
+
 Boundaries to keep:
 
 - `engine/` never imports `orchestration/`. The Simulator sees only `EngineConfig`: no run name, run count or launch details.
@@ -79,10 +84,10 @@ Boundaries to keep:
 ## Status (verified 2026-10-07 at `2311e7d`)
 
 - **Working:** config schemas and YAML loader, CLI, multi-run scheduler, `Clock`, agent models, synthetic scenario generator (pickle output), `_read_synthetic` (unpickles `scenario.cache` if it exists; otherwise reads the recipe YAML at `scenario.path`, calls the generator in-process and, if `cache` is set, writes the pickle atomically). Unit tests cover config, clock, simulator, scenario loader, runner and scheduler; none cover `agents.py` or the generator.
-- **Stubs:** `Simulator.initialize_scenario` (loads the scenario, then discards it), `Simulator.step` (only advances the clock), `_read_real` (returns an empty `Scenario`; `ScenarioConfig.path` is never read for `source: real`), the module configs (`enabled` only), `OutputConfig` (defined, unused).
+- **Stubs:** `Simulator.initialize_scenario` (keeps `scenario.households` as `Simulator.households` and discards the other agent lists), `Simulator.step` (only advances the clock), `_read_real` (returns an empty `Scenario`; `ScenarioConfig.path` is never read for `source: real`), `ConstructionConfig` and `MarketConfig` (`enabled` only), `ArtificialDemographicsConfig` (complete, but no module reads it), `OutputConfig` (defined, unused).
 - **Empty (`.gitkeep` only):** `engine/modules/*/`, `engine/parallel/`, `tests/integration/`, `scripts/`.
 - **Missing, though the docs reference them:** `engine/io/output.py` (snapshot writer driven by `OutputConfig`) and `orchestration/assembler.py` (aggregation across runs). `run()` returns the finished simulators and `main()` discards them, so a run writes nothing.
-- **Undecided:** the time unit of a tick. Don't build one in. If a change needs it, stop and ask.
+- **Tick length:** one tick is `sim.months_per_tick` months (a hyperparameter, default 3, must be > 0). Module rates are annual and converted per tick. Only the Simulator's yearly log reads it so far.
 
 ## Agent models — `engine/core/agents.py`
 
@@ -118,7 +123,7 @@ Mention a mismatch when it is relevant to the task. Don't fix one as a side effe
 - Python 3.11 style: `X | None`, built-in generics, `pathlib.Path`. Keep paths OS-agnostic (Windows dev machines, Ubuntu CI).
 - `engine/` and `orchestration/` are mypy-strict: annotate everything. Tests are not type-checked.
 - Configs are Pydantic `BaseModel`s validated with constraints (`Field(gt=0)`, `Literal[...]`), not with manual checks.
-- New config parameter: add a typed field with a default in `engine/config.py` (`orchestration/config.py` for run metadata), mirror it in `configs/simulation/config_template.yaml`, and add a validation test.
+- New config parameter: add a typed field with a default in `engine/config.py` (`orchestration/config.py` for run metadata), mirror it in `configs/simulation/config_template.yaml`, and add a validation test. Module parameters go in that variant's schema (e.g. `ArtificialDemographicsConfig`) and are mirrored in `configs/simulation/<module>/<variant>.yaml`.
 - New runtime dependency: add it to `[project].dependencies`. The mypy hook's environment holds only `pydantic` and `types-PyYAML` (`additional_dependencies` in `.pre-commit-config.yaml`), so any other import is `Any` there. Add the package or its stubs when its types matter.
 - Match the existing style: module docstrings that explain *why*, `# ── Section ──` banners in larger files, LF line endings, 4-space indent (2 for YAML, TOML and JSON).
 - This is research code. State every modelling assumption in the docstring and in the reply. Never invent Lisbon-specific empirical values: cite the source or mark the value as a placeholder.

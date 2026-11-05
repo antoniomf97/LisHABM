@@ -7,7 +7,10 @@ Simulators for downstream aggregation.
 """
 
 import argparse
+import logging
 from pathlib import Path
+
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from engine.core.simulator import Simulator
 from orchestration.config import load_config
@@ -42,10 +45,22 @@ def main(argv: list[str] | None = None) -> int:
         "config",
         help="config name in configs/simulation/, or a path to a .yaml file",
     )
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        help="logging verbosity (default: INFO)",
+    )
     args = parser.parse_args(argv)
     path = _resolve_config(args.config)
     if not path.is_file():
         parser.error(f"config not found: {path}")
 
-    run(path)
+    logging.basicConfig(
+        level=args.log_level,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+    # Route log lines around the tqdm bars instead of through them.
+    with logging_redirect_tqdm():
+        run(path)
     return 0
